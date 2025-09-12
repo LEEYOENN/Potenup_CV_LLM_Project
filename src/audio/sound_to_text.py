@@ -1,28 +1,33 @@
 from faster_whisper import WhisperModel
 from pathlib import Path
+import uuid
 
-# TODO 자막 추출 할 때 쓰기 좋은 형태로 생성하는 것으로 변경(한줄에 한 자막 - uuid, 시간, 텍스트)
-# 68c16153-df74-8329-9778-1b3d05140df8, 00:00:00 --> 00:00:01, 살까요? 말까요?
-def srt_ts(t: float) -> str:
+CSV_PATH = Path('../../data/csv')
+VIDEO_PATH = Path('../../data/video')
+
+def srt_timestamp(t: float) -> str:
 
     ms = int(t * 1000)
     hh, ms = divmod(ms, 3600000)
     mm, ms = divmod(ms, 60000)
     ss, ms = divmod(ms, 1000)
 
-    return f"{hh:02d}:{mm:02d}:{ss:02d},{ms:03d}"
+    return f"{hh:02d}:{mm:02d}:{ss:02d}"
 
-m = WhisperModel("small", device="cpu", compute_type="int8")
-segments, info = m.transcribe("./video/joo.mp4", language="ko", vad_filter=False)
+def srt_extract(video_source):
+    
+    model = WhisperModel('small', device='cpu', compute_type='int8')
+    segments, info = model.transcribe(str(VIDEO_PATH / video_source), language='ko', vad_filter=False)
 
-out = Path("out"); out.mkdir(exist_ok=True)
-txt_path = out / "joo.txt"
-srt_path = out / "joo.srt"
+    CSV_PATH.mkdir(exist_ok=True)
 
-with open(txt_path, "w", encoding="utf-8") as f_txt, open(srt_path, "w", encoding="utf-8") as f_srt:
-    for i, s in enumerate(segments, start=1):   
-        line = s.text.strip()
-        f_txt.write(line + "\n")
-        f_srt.write(f"{i}\n{srt_ts(s.start)} --> {srt_ts(s.end)}\n{line}\n")
+    file_name = str(uuid.uuid4())
+    txt_path = CSV_PATH / f'{file_name}.txt'
 
-print("saved:", txt_path, srt_path)
+    with open(txt_path, "w", encoding="utf-8") as full_text:
+        for segment in segments:   
+            id = uuid.uuid4()
+            line = segment.text.strip()
+            full_text.write(f"{id}, {srt_timestamp(segment.start)}, {srt_timestamp(segment.end)}, {line}\n")
+            
+srt_extract('yt.mp4')
