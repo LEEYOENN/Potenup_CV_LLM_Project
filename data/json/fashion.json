@@ -1,8 +1,7 @@
-[
-    {
+{
+    "가죽 자켓" : {
         "id" : "57eea140-71dc-4915-b8f2-b617fdbf40d9",
-        "keyword" : "가죽 자켓",
-        "image_path" : "data/image/leather_jacket_total.jpg",
+        "image_path" : "../../data/image/leather_jacket_total.jpg",
         "link" : "https://noirlarmes.com/m-leather/?idx=1209&srsltid=AfmBOoprDztmtZhGrxB1T1wK0qTy1rKL9sZ5mnheE0i3xi7F6eb06yqJ"
     }
-]
+}
