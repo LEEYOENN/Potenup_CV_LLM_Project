@@ -11,6 +11,7 @@ dependencies = [
     "numpy>=2.2.6",
     "opencv-python>=4.12.0.88",
     "pandas>=2.3.2",
+    "requests>=2.32.5",
     "scikit-learn>=1.7.1",
     "ultralytics>=8.3.191",
     "xgboost>=3.0.4",
