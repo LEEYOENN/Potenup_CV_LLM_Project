@@ -1,11 +1,12 @@
 from ultralytics import YOLO
 import cv2
+import numpy as np
 
 #------ 파일 경로 설정 ------#
 # 영상의 경로
 video_path = 'videos/sample_cut.mp4'
 # 광고 이미지 경로
-ad_image_path = 'data/images/samsungphone.jpg'
+ad_image_path = 'data/images/pepsizero.png'
 # 광고 영상 저장 경로
 output_video_path = 'videos/output_video_with_samsung_ad.mp4'
 
