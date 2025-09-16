@@ -5,6 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
+    "fastapi>=0.116.1",
     "faster-whisper>=1.2.0",
     "jupyter>=1.1.1",
     "matplotlib>=3.10.6",
@@ -12,8 +13,11 @@ dependencies = [
     "moviepy>=2.2.1",
     "opencv-python>=4.12.0.88",
     "pandas>=2.3.2",
+    "python-multipart>=0.0.20",
     "scikit-learn>=1.7.1",
+    "streamlit>=1.49.1",
     "ultralytics>=8.3.191",
+    "uvicorn>=0.35.0",
     "xgboost>=3.0.4",
     "yt-dlp>=2025.8.27",
 ]
