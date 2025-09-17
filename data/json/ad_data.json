@@ -1,0 +1,16 @@
+[
+    {
+        "id": 1,
+        "company": "삼양",
+        "product": "불닭볶음면",
+        "category": "instant food",
+        "image_path": "C:/Users/user/potenup/sep_project/Potenup_CV_LLM_Project/data/ad_images//ad_images/instant food_9a22cd91-176d-4d53-9fb2-6a4ec6e9d4ca.png"
+    },
+    {
+        "id": 2,
+        "company": "핸드 포메이드",
+        "product": "핸드 크림",
+        "category": "handcream",
+        "image_path": "C:/Users/user/potenup/sep_project/Potenup_CV_LLM_Project/data/ad_images//ad_images/handcream_bbaf5fd4-9fa1-4489-9950-7d4bb5112538.png"
+    }
+]

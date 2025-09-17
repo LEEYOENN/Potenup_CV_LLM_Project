@@ -6,9 +6,9 @@ import numpy as np
 # 영상의 경로
 video_path = 'videos/sample_cut.mp4'
 # 광고 이미지 경로
-ad_image_path = 'data/images/pepsizero.png'
+ad_image_path = 'data/ad_images/instant food_9a22cd91-176d-4d53-9fb2-6a4ec6e9d4ca.png'
 # 광고 영상 저장 경로
-output_video_path = 'videos/output_video_with_samsung_ad.mp4'
+output_video_path = 'videos/output_video_with_ad_0917.mp4'
 
 #------ YOLO 모델 로드 ------#
 model = YOLO('yolov8n.pt')

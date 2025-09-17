@@ -1,3 +1,20 @@
-videos/
-data/images/
+
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
 .env
+.venv
+.DS_Store
+
+# data
+pure_eval-0.2.3.dist-info
+data/video
+data/csv
+videos/
+
