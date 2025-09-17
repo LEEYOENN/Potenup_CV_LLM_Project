@@ -11,7 +11,6 @@ wheels/
 .venv
 .DS_Store
 
-
 # data
 pure_eval-0.2.3.dist-info
 data/video

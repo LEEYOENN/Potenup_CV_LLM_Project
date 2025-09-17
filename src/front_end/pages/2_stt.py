@@ -49,7 +49,7 @@ if st.button("전송", type="primary"):
             }
 
             with st.spinner("서버로 전송 중..."):
-                url = "http://localhost:8000/video/stt"
+                url = "http://localhost:8001/video/stt"
                 res = requests.post(url, data=form_data, files=files)
                 res.raise_for_status()
                 data = res.json()

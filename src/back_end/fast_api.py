@@ -37,7 +37,7 @@ async def send_stt_video(
     text_maker.srt_extract(id)
     
     print('4. match')
-    df = video_maker.make_matched_keyword_srt_df(id)
+    df = text_maker.make_matched_keyword_srt_df(id)
     
     print('5. video')
     video_maker.attach_goods_image_to_video(df, id, show_time)
