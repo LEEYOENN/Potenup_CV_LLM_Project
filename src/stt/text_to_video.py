@@ -1,5 +1,7 @@
 import json
 from pathlib import Path
+
+from ultralytics import YOLO
 from moviepy import VideoFileClip, CompositeVideoClip
 from moviepy.video.VideoClip import ImageClip
 
@@ -28,12 +30,13 @@ def attach_goods_image_to_video(matched_df, video_id: str, show_time: int):
                 video = VideoFileClip(str(VIDEO_INPUT_PATH / f'{video_id}.mp4'))
 
                 seconds = time_to_seconds(row['start'])
-
-                # TODO 상품 이미지가 나오는 공간을 YOLO나 SAM으로 파악하여 빈공간에 나올 수 있도록 수정(.with_position((0.7, 0.05) 값 자동화)
+                position = find_appropriate_goods_position(video_id, seconds)
+                print('position', position)
+                
                 img = (
                     ImageClip(str(BASE_DIR / goods_info['image_path']), duration=show_time) 
                         .with_start(seconds)
-                        .with_position((0.7, 0.05), relative=True)
+                        .with_position(position, relative=True)
                 )
 
                 # 영상 + 이미지 합성
@@ -42,6 +45,27 @@ def attach_goods_image_to_video(matched_df, video_id: str, show_time: int):
                 # 영상 저장
                 final.write_videofile(str(VIDEO_OUTPUT_PATH / f'{video_id}.mp4'), codec="libx264", audio_codec="aac")
                 
-def find_appropriate_goods_position(video_id: str):
+def find_appropriate_goods_position(video_id: str, seconds: int):
+    
+    model = YOLO("yolov8n.pt")
     
     video = VideoFileClip(str(VIDEO_INPUT_PATH / f'{video_id}.mp4'))
+    
+    frame_w, frame_h = video.size
+    frame = video.get_frame(seconds)
+    
+    results = model(frame)
+    boxes = results[0].boxes.xyxy.cpu().numpy()
+    
+    x1, y1, x2, y2 = boxes[0]
+    
+    person_center = (x1 + x2) / 2
+    video_center = frame_w / 2
+
+    # 영상 전체 가로의 중심을 기준으로 사람의 위치를 파악
+    if person_center > video_center:
+        print('person is right')
+        return (0.05, 0.05)  # 사람이 오른쪽 → 이미지 왼쪽
+    else:
+        print('person is left')
+        return (0.7, 0.05)  # 사람이 왼쪽 → 이미지 오른쪽(기본값)
