@@ -55,17 +55,21 @@ def find_appropriate_goods_position(video_id: str, seconds: int):
     frame = video.get_frame(seconds)
     
     results = model(frame)
-    boxes = results[0].boxes.xyxy.cpu().numpy()
+    boxes = results[0].boxes
     
-    x1, y1, x2, y2 = boxes[0]
-    
-    person_center = (x1 + x2) / 2
-    video_center = frame_w / 2
+    for x1, y1, x2, y2, conf, cls in boxes.data:
+        
+        if cls == 0:  # 0 = person
+            print("person detected:", x1, y1, x2, y2, conf)
 
-    # 영상 전체 가로의 중심을 기준으로 사람의 위치를 파악
-    if person_center > video_center:
-        print('person is right')
-        return (0.05, 0.05)  # 사람이 오른쪽 → 이미지 왼쪽
-    else:
-        print('person is left')
-        return (0.7, 0.05)  # 사람이 왼쪽 → 이미지 오른쪽(기본값)
+            person_center = (x1 + x2) / 2
+            video_center = frame_w / 2
+
+            # 영상 전체 가로의 중심을 기준으로 사람의 위치를 파악
+            if person_center > video_center:
+                print('person is right')
+                return (0.05, 0.05)  # 사람이 오른쪽 → 이미지 왼쪽
+            else:
+                print('person is left')
+                return (0.7, 0.05)  # 사람이 왼쪽 → 이미지 오른쪽(기본값)
+        
