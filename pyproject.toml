@@ -22,4 +22,5 @@ dependencies = [
     "uvicorn>=0.35.0",
     "xgboost>=3.0.4",
     "yt-dlp>=2025.8.27",
+    "konlpy>=0.6.0",
 ]

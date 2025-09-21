@@ -17,4 +17,6 @@ pure_eval-0.2.3.dist-info
 data/video
 data/csv
 videos/
+data/processed_videos/
+data/uploded_videos/
 

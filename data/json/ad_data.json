@@ -4,13 +4,34 @@
         "company": "삼양",
         "product": "불닭볶음면",
         "category": "instant food",
-        "image_path": "C:/Users/user/potenup/sep_project/Potenup_CV_LLM_Project/data/ad_images//ad_images/instant food_9a22cd91-176d-4d53-9fb2-6a4ec6e9d4ca.png"
+        "image_path": "C:/Users/user/potenup/sep_project/Potenup_CV_LLM_Project/data/ad_images/instant food_9a22cd91-176d-4d53-9fb2-6a4ec6e9d4ca.png"
     },
     {
         "id": 2,
         "company": "핸드 포메이드",
         "product": "핸드 크림",
         "category": "handcream",
-        "image_path": "C:/Users/user/potenup/sep_project/Potenup_CV_LLM_Project/data/ad_images//ad_images/handcream_bbaf5fd4-9fa1-4489-9950-7d4bb5112538.png"
+        "image_path": "C:/Users/user/potenup/sep_project/Potenup_CV_LLM_Project/data/ad_images/handcream_bbaf5fd4-9fa1-4489-9950-7d4bb5112538.png"
+    },
+    {
+        "id": 3,
+        "company": "뚜레쥬르",
+        "product": "크랜베리치킨 샌드위치",
+        "category": "sandwich",
+        "image_path": "C:/Users/user/potenup/sep_project/Potenup_CV_LLM_Project/data/ad_images/4f5785a5-4835-4ae9-92af-67bc5db6d6e8_sandwich.png"
+    },
+    {
+        "id": 4,
+        "company": "뚜레쥬르",
+        "product": "크랜베리 치킨 샌드위치",
+        "category": "sandwich",
+        "image_path": "C:/Users/user/potenup/sep_project/Potenup_CV_LLM_Project/data/ad_images/with_logo_4f5785a5-4835-4ae9-92af-67bc5db6d6e8_sandwich.png"
+    },
+    {
+        "id": 5,
+        "company": "크록스",
+        "product": "크록스 바야밴드 클로그 (205089-126)",
+        "category": "shoes",
+        "image_path": "C:/Users/user/potenup/sep_project/Potenup_CV_LLM_Project/data/ad_images/with_logo_75c6b440-2510-4946-aa65-11bfd56a2ade_shoes.png"
     }
 ]

@@ -6,9 +6,9 @@ import uuid
 from fastapi import FastAPI, APIRouter, UploadFile, File, HTTPException
 import json
 from fastapi.responses import JSONResponse
-
+from pathlib import Path
 # 비디오 관련 엔드포인트를 위한 API 라우터 생성
-router = APIRouter()
+attach_router = APIRouter()
 # 이 라우터를 메인 FastAPI 앱에 포함시키는 예시
 # from .ad_attach_api import router # 'ad_attach_api' 파일에서 'router'를 가져옵니다.
 # app = FastAPI()
@@ -18,9 +18,12 @@ router = APIRouter()
 
 # 모델 및 출력 디렉토리 전역 변수로 설정
 model = YOLO("yolov8n.pt")
-UPLOAD_DIR = "../../data/uploded_videos"
-PROCESSED_DIR = "../../data/processed_videos"
-AD_DATA_FILE = "../../data/json/ad_data.json"
+
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+
+UPLOAD_DIR = BASE_DIR / "data" / "uploaded_videos"
+PROCESSED_DIR = BASE_DIR / "data" / "processed_videos"
+AD_DATA_FILE = BASE_DIR / "data" / "json" / "ad_data.json"
 
 # 디렉토리가 없다면 생성
 os.makedirs(UPLOAD_DIR, exist_ok=True)
@@ -91,10 +94,10 @@ def process_video_with_ad(video_path: str, ad_image_path: str, output_path: str,
 
 
 # 업로드 영상과 삽입할 광고이미지 받아서 광고 삽입 영상 반환
-@router.post("/video/ad_attach")
+@attach_router.post("/video/ad_attach")
 async def attach_ad_to_video(
     video_file: UploadFile = File(...),
-    ad_id = int
+    ad_id: str = "1"
 ):
     """
     지정된 객체를 감지하여 광고 이미지를 동영상에 덧씌웁니다.
@@ -113,6 +116,7 @@ async def attach_ad_to_video(
         with open(video_path, "wb") as buffer:
             # 첫번째 파일 객체의 내용을 읽어 두번째 파일 객체에 쓰는 기능
             shutil.copyfileobj(video_file.file, buffer)
+            
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to save video file: {e}")
     
@@ -128,15 +132,14 @@ async def attach_ad_to_video(
         raise HTTPException(status_code=500, detail=f"Ad data file not found at {AD_DATA_FILE}")
 
     # ad_id와 일치하는 데이터를 찾습니다.
-    for ad in ad_data:
-        ad_info = next((ad for ad in ad_data if ad["id"] == ad_id), None)
+    ad_info = next((ad for ad in ad_data if ad["id"] == int(ad_id)), None)
 
     if ad_info is None:
         raise HTTPException(status_code=404, detail=f"Ad with ID {ad_id} not found.")
 
     # 4. 동영상 처리
     try:
-        process_video_with_ad(video_path, ad_image_path, output_path, target_class=62)
+        process_video_with_ad(video_path, ad_info["image_path"], output_path, target_class=62)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to video processing: {e}")
     finally:
@@ -144,13 +147,10 @@ async def attach_ad_to_video(
         if os.path.exists(video_path):
             os.remove(video_path)
     
-    return JSONResponse(content={"message": "Video processed successfully", "output_video_path": output_path},
+    return JSONResponse(content={"message": "Video processed successfully", "output_video_path": Path(output_path).as_posix()},
                         status_code=200
                         )
 
 
 
-    
-# 광고 업체가 자신의 정보와 객체 이미지 입력 후 광고 이미지 생성
 
-# 광고 업체가 이미지 확인하고 자신의 정보 등록

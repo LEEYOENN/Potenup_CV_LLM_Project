@@ -9,13 +9,16 @@ import time
 
 import src.stt.video_to_text as text_maker
 import src.stt.text_to_video as video_maker
-
+from src.back_end.ad_attach_api import attach_router
+from src.back_end.ad_register_api import register_router
 
 # VIDEO_PATH = Path('../../data/video/input')
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 VIDEO_PATH = BASE_DIR / "data" / "video" / "input"
 
 app = FastAPI()
+app.include_router(attach_router)
+app.include_router(register_router)
 
 @app.post("/video/stt")
 async def send_stt_video(
