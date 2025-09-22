@@ -16,7 +16,7 @@ def time_to_seconds(time_str: str) -> int:
     h, m, s = map(int, time_str.split(":"))
     
     return h * 3600 + m * 60 + s
-    
+
 def attach_goods_image_to_video(matched_df, video_id: str, show_time: int):
     
     with open(str(JSON_PATH / 'fashion.json'), 'r', encoding='utf-8') as f:

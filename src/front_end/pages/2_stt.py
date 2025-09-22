@@ -35,6 +35,13 @@ st.markdown("""
 video_file = st.file_uploader("🎥 영상 업로드", type=["mp4", "mov", "avi", "mkv"])
 show_time = st.number_input("광고 노출 시간(초)", min_value=0, step=1)
 
+st.divider()
+
+image_file = st.file_uploader("광고 이미지 업로드(옵션)", type=["jpg", "jpeg", "png"])
+goods_keyword = st.text_input("광고 키워드(옵션)")
+goods_link = st.text_input("광고 링크(옵션)")
+
+
 # -----------------------------
 # 전송 버튼
 # -----------------------------
@@ -43,14 +50,16 @@ if st.button("광고 추가 영상으로 변환", type="primary"):
         st.warning("영상을 업로드해주세요.")
     else:
         try:
-            form_data = {"show_time": show_time}  # key 이름 백엔드랑 맞춤
+            
             files = {
-                "video": (video_file.name, video_file.getvalue(), video_file.type)
+                "video": (video_file.name, video_file, video_file.type),
+                "image": (image_file.name, image_file, image_file.type)    
             }
-
+            datas = {"show_time": show_time, "goods_keyword": goods_keyword, "goods_link" : goods_link}
+            
             with st.spinner("서버로 전송 중..."):
-                url = "http://localhost:8001/video/stt"
-                res = requests.post(url, data=form_data, files=files)
+                url = "http://localhost:8000/video/stt"
+                res = requests.post(url, files=files, data=datas)
                 res.raise_for_status()
                 data = res.json()
 
