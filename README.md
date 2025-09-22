@@ -11,5 +11,5 @@ Potenup 교육과정 9월 Computer Vision과 Large Language Model 기반 프로�
 ```streamlit run src\front_end\home.py```
 
 # 백엔드 시작 
-```uvicorn src.back_end.fast_api:app --reload```
+```uvicorn src.back_end.fast_api:app --port 8080 --reload```
 

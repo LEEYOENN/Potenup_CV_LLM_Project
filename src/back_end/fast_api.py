@@ -1,6 +1,6 @@
 from fastapi import FastAPI, UploadFile, File, Form
 from fastapi.responses import JSONResponse
-
+from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 from typing import List
 import shutil
@@ -15,10 +15,20 @@ from src.back_end.ad_register_api import register_router
 # VIDEO_PATH = Path('../../data/video/input')
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 VIDEO_PATH = BASE_DIR / "data" / "video" / "input"
+GENERATED_AD_IMAGE_DIR = BASE_DIR / "data" / "ad_images"
+PROCESSED_DIR = BASE_DIR / "data" / "processed_videos"
 
 app = FastAPI()
-app.include_router(attach_router)
-app.include_router(register_router)
+
+# 웹에서 접근할 prefix를 /ad/images 로 하려면 이렇게 mount
+app.mount("/ad/images", StaticFiles(directory=GENERATED_AD_IMAGE_DIR), name="ad_images")
+
+# 영상을 웹에서 접근 가능하게 설정
+app.mount("/processed_videos", StaticFiles(directory=PROCESSED_DIR), name="processed_videos")
+
+app.include_router(attach_router, prefix="/video")
+app.include_router(register_router, prefix="/ad")
+
 
 @app.post("/video/stt")
 async def send_stt_video(

@@ -12,6 +12,7 @@ import uuid
 from dotenv import load_dotenv
 import cv2
 import numpy as np
+from fastapi.staticfiles import StaticFiles
 
 load_dotenv()
 
@@ -26,6 +27,9 @@ LOGO_DIR = BASE_DIR / "data" / "logos"
 
 os.makedirs(GENERATED_AD_IMAGE_DIR, exist_ok=True)
 os.makedirs(ORIGIN_AD_IMAGE_DIR, exist_ok=True)
+
+# 이미지를 웹에서 접근 가능하게 설정 - '/images' url로 들어오는 요청을 'GENERATED_AD_IMAGE_DIR' 로 연결
+# register_router.mount("/images", StaticFiles(directory=GENERATED_AD_IMAGE_DIR), name="images")
 
 def generate_ad_image(category: str, origin_ad_image_path: str):
     """
@@ -47,6 +51,7 @@ def generate_ad_image(category: str, origin_ad_image_path: str):
     )
 
     image = Image.open(origin_ad_image_path)
+
     try:
         response = client.models.generate_content(
             model="gemini-2.5-flash-image-preview",
@@ -70,7 +75,7 @@ def insert_logo_to_image(ad_image_path: str, logo_image_path: str):
         raise FileNotFoundError(f"Failed to open logo image file: {logo_image_path}")
 
     #------ 로고 크기 및 위치 설정 ------#
-    logo_width = 230
+    logo_width = 260
     aspect_ratio = logo_image_loaded.shape[1] / logo_image_loaded.shape[0] # 가로/세로 비율
     logo_height = int(logo_width / aspect_ratio)
 
@@ -78,7 +83,7 @@ def insert_logo_to_image(ad_image_path: str, logo_image_path: str):
     resized_logo = cv2.resize(logo_image_loaded, (logo_width, logo_height), interpolation=cv2.INTER_AREA)
 
     # 로고를 삽입할 광고 이미지의 오른쪽 하단 위치 설정
-    y_offset, x_offset = 10, 10 # 하단 오른쪽 마진
+    y_offset, x_offset = 15, 20 # 하단 오른쪽 마진
 
     # 광고 이미지와 로고 이미지의 크기 가져오기
     ad_height, ad_width, _ = generated_ad_image.shape
@@ -94,7 +99,7 @@ def insert_logo_to_image(ad_image_path: str, logo_image_path: str):
     if y2 > ad_height : y2 = ad_height
     if x2 > ad_width : x2 = ad_width
 
-    #-------------- 알파블랜딩 수행 ---------------#
+    #-------------- 알파블랜딩 수행 ----------------#
     # 로고의 BGR과 알파 채널을 분리
     if resized_logo.shape[2] == 4:
         b, g, r, alpha = cv2.split(resized_logo)
@@ -121,11 +126,15 @@ def insert_logo_to_image(ad_image_path: str, logo_image_path: str):
     return generated_ad_image
     
 
+# ----------------- api 코드 ------------------------
 
 
 # 광고 업체가 자신의 정보와 객체 이미지 입력 후 광고 이미지 생성
-@register_router.post("/ad/generate_ad_image")
-async def generate_ad_image_api(origin_image: UploadFile = File(...), category: str = "product"):
+@register_router.post("/generate_ad_image")
+async def generate_ad_image_api(
+    origin_image: UploadFile = File(...), 
+    category: str = Form("product")
+    ):
     """
     지정된 객체를 감지하여 광고 이미지를 동영상에 덧씌웁니다.
 
@@ -139,7 +148,7 @@ async def generate_ad_image_api(origin_image: UploadFile = File(...), category: 
     # 1. 업로드된 오리지널 이미지를 저장
 
     # ------------ 이미지 생성  ------------
-    unique_filename = f"{uuid.uuid4()}_{origin_image.filename}"
+    unique_filename = f"{uuid.uuid4()}_{category.replace(' ', '_')}.png"
 
     origin_ad_image_path = ORIGIN_AD_IMAGE_DIR / unique_filename
 
@@ -166,7 +175,7 @@ async def generate_ad_image_api(origin_image: UploadFile = File(...), category: 
         elif part.inline_data is not None:
             image = Image.open(BytesIO(part.inline_data.data))
 
-            unique_filename = f"{uuid.uuid4()}_{category}.png"
+            unique_filename = f"{uuid.uuid4()}_{category.replace(' ', '_')}.png"
             generated_ad_image_path = GENERATED_AD_IMAGE_DIR / unique_filename
             
             image.save(generated_ad_image_path)
@@ -183,18 +192,31 @@ async def generate_ad_image_api(origin_image: UploadFile = File(...), category: 
 
 # -----------------------------------------------------------       
 # 광고 업체가 이미지 확인하고 자신의 정보 등록
-@register_router.post("/ad/register")
+@register_router.post("/register")
 async def register_ad_api(
-    save_image_path: str,
-    company: str,
-    product: str,
-    category: str
+    save_image_path: str = Form(...),
+    company: str = Form(...),
+    product: str = Form(...),
+    category: str = Form(...)
 ):
     """
     생성된 광고 이미지와 관련 데이터를 JSON 파일에 저장합니다.
     """
     # 1. 파일 경로 설정
     json_file_path = AD_DATA_FILE
+
+    # 1-1. 이미지 경뢰를 절대 경로로 바꿔서 저장 (경로 정규화)
+    try:
+        incoming = Path(save_image_path)
+        if incoming.is_absolute():
+            real_path = incoming.resolve()
+        else:
+            # 만약 상대경로(예: "data/ad_images/xxx.png" 또는 "/data/ad_images/xxx.png")가 오면
+            # 여기선 파일명 기준으로 GENERATED_AD_IMAGE_DIR 에서 찾는 방식
+            candidate = GENERATED_AD_IMAGE_DIR / incoming.name
+            real_path = candidate.resolve()
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"경로 처리 실패: {e}")
 
     # 2. 기존 json 데이터 읽기(파일이 없으면 빈 리스트로 초기화)
     try:
@@ -211,7 +233,7 @@ async def register_ad_api(
         "company": company,
         "product": product,
         "category": category,
-        "image_path": save_image_path
+        "image_path": real_path.as_posix() # 절대 경로로 저장
     }
 
     data.append(new_entity)
@@ -227,7 +249,7 @@ async def register_ad_api(
 
 # -----------------------------------------------------------
 # 광고 업체가 이미제에 로고를 삽입
-@register_router.post("/ad/logo")
+@register_router.post("/logo")
 async def insert_logo_api(
     logo_image : UploadFile = File(...),
     ad_id: int = Form(...)
@@ -285,3 +307,15 @@ async def insert_logo_api(
     return JSONResponse(content={"message": "Logo is successfully inserted and ad_data updated.",
             "image_path": Path(new_image_path).as_posix()},
             status_code=200)
+
+@register_router.get("/list")
+async def get_ad_list():
+    """
+    JSON 파일에서 모든 광고리스트를 가져옵니다.
+    """
+    try:
+        with open(AD_DATA_FILE, 'r', encoding="utf-8") as f:
+            ad_data = json.load(f)
+            return JSONResponse(content=ad_data, status_code=200)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return JSONResponse(content=[], status_code=200)

@@ -4,7 +4,7 @@
         "company": "삼양",
         "product": "불닭볶음면",
         "category": "instant food",
-        "image_path": "C:/Users/user/potenup/sep_project/Potenup_CV_LLM_Project/data/ad_images/instant food_9a22cd91-176d-4d53-9fb2-6a4ec6e9d4ca.png"
+        "image_path": "C:/Users/user/potenup/sep_project/Potenup_CV_LLM_Project/data/ad_images/instant_food_9a22cd91-176d-4d53-9fb2-6a4ec6e9d4ca.png"
     },
     {
         "id": 2,
@@ -33,5 +33,40 @@
         "product": "크록스 바야밴드 클로그 (205089-126)",
         "category": "shoes",
         "image_path": "C:/Users/user/potenup/sep_project/Potenup_CV_LLM_Project/data/ad_images/with_logo_75c6b440-2510-4946-aa65-11bfd56a2ade_shoes.png"
+    },
+    {
+        "id": 6,
+        "company": "에스쁘아",
+        "product": "베어글로우 립밥 - 핀치 로즈",
+        "category": "lipstick",
+        "image_path": "C:/Users/user/potenup/sep_project/Potenup_CV_LLM_Project/data/ad_images/with_logo_with_logo_8487e020-fe07-4121-9b1c-2d85713ad61b_lipstick.png"
+    },
+    {
+        "id": 7,
+        "company": "에스쁘아",
+        "product": "베어글로우 립밥 - 핀치 로즈",
+        "category": "lipstick",
+        "image_path": "C:/Users/user/potenup/sep_project/Potenup_CV_LLM_Project/data/ad_images/adca6abf-f4ec-4435-9700-8aeafc14ba9b_lipstick.png"
+    },
+    {
+        "id": 8,
+        "company": "에스쁘아",
+        "product": "베어글로우 립밤 - 핀치로즈",
+        "category": "lipstick",
+        "image_path": "C:/Users/user/potenup/sep_project/Potenup_CV_LLM_Project/data/ad_images/with_logo_529938f7-395a-4d0c-8c93-a8522bd575ac_lipstick.png"
+    },
+    {
+        "id": 9,
+        "company": "페리페라",
+        "product": "메이크업 쿠션 깔끔핏 - 2호",
+        "category": "makeup cusion",
+        "image_path": "C:/Users/user/potenup/sep_project/Potenup_CV_LLM_Project/data/ad_images/with_logo_06685c88-f7ab-4117-a0ef-6b07102c7797_makeup_cusion.png"
+    },
+    {
+        "id": 10,
+        "company": "에스쁘아",
+        "product": "베어글로우 립밤 - 핀치로즈",
+        "category": "lipstick",
+        "image_path": "C:/Users/user/potenup/sep_project/Potenup_CV_LLM_Project/data/ad_images/with_logo_8b7d8484-2630-47d2-8126-3b83a3d48713_lipstick.png"
     }
 ]
