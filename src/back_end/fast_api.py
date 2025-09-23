@@ -26,13 +26,11 @@ async def send_stt_video(
 
     id = str(uuid.uuid4())
 
-    print('0. 상품 이미지 및 링크(QR화) 하나의 이미지로 변환하여, 키워드와 함께 DB(JSON)에 저장 - optional')
+    print('0. 상품 이미지 및 링크(QR화) 하나의 광고 포스터로 변환하여, 키워드와 함께 DB(JSON)에 저장')
     if image is not None:
         goods_maker.image_to_goods(id, image, goods_link, goods_keyword)
     
     print('1. 영상 파일 저장')
-    # 새 이름 생성
-    id = str(uuid.uuid4())
     ext = Path(video.filename).suffix
     new_filename = f"{id}{ext}"
     new_path = VIDEO_PATH / new_filename
