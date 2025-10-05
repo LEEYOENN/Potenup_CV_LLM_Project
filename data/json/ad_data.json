@@ -68,5 +68,12 @@
         "product": "베어글로우 립밤 - 핀치로즈",
         "category": "lipstick",
         "image_path": "C:/Users/user/potenup/sep_project/Potenup_CV_LLM_Project/data/ad_images/with_logo_8b7d8484-2630-47d2-8126-3b83a3d48713_lipstick.png"
+    },
+    {
+        "id": 11,
+        "company": "페리페라",
+        "product": "메이크업 쿠션 깔끔핏 - 2호",
+        "category": "makeup cusion",
+        "image_path": "C:/Users/user/potenup/sep_project/Potenup_CV_LLM_Project/data/ad_images/with_logo_b8745f4c-b195-4a43-87b4-7bca5711aed6_makeup_cusion.png"
     }
 ]

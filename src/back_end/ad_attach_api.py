@@ -42,25 +42,26 @@ def process_video_with_ad(video_path: str, ad_image_path: str, output_path: str,
     이후 프레임에서는 '해당 프레임에서 물체가 감지되었을 때만' 고정 위치에 광고를 보여줍니다.
     감지되지 않으면 원본 프레임을 그대로 사용합니다.
     """
+    # 1. 비디오 파일 열기
     vcap = cv2.VideoCapture(video_path)
     if not vcap.isOpened():
         raise HTTPException(status_code=500, detail=f"Failed to open video file: {video_path}")
-
-    ad_image = cv2.imread(ad_image_path, cv2.IMREAD_UNCHANGED)  # alpha 포함 가능
+    
+    ad_image = cv2.imread(ad_image_path, cv2.IMREAD_UNCHANGED) # alpha 채널 포함 가능
     if ad_image is None:
-        raise HTTPException(status_code=500, detail=f"Failed to open ad image file: {ad_image_path}")
+        raise HTTPException(status_code=500, detaile=f"Failed to open ad_image file: {ad_image_path}")
+    
+    frame_width = int(vcap.get(cv2.CAP_PROP_FRAME_WIDTH)) # 비디오 프레임 크기
+    frame_height = int(vcap.get(cv2.CAP_PROP_FRAME_HEIGHT)) # 비디오 프레임 크기
+    fps = int(vcap.get(cv2.CAP_PROP_FPS)) or 30 # 비디오 프레임 수
 
-    frame_width = int(vcap.get(cv2.CAP_PROP_FRAME_WIDTH))
-    frame_height = int(vcap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-    fps = int(vcap.get(cv2.CAP_PROP_FPS)) or 30
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     out = cv2.VideoWriter(output_path, fourcc, fps, (frame_width, frame_height))
 
     # --- 초기 프레임에서 첫 감지 좌표를 얻기 위한 준비 ---
-    x1_fixed = y1_fixed = x2_fixed = y2_fixed = None
-    first_frame_read = False
+    x1_fixed, y1_fixed, x2_fixed, y2_fixed = None
 
-    # 알파 채널이 있는 광고 이미지를 프레임에 덮을 때 쓰는 헬퍼 (블렌딩)
+    # --- 알파 채널이 있는 광고 이미지를 프레임에 덮을 때 쓰는 헬퍼 (블렌딩) --- #
     def overlay_image_alpha(bg, fg, x, y):
         """
         bg: background BGR 이미지 (수정됨)

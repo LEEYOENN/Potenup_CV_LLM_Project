@@ -46,8 +46,22 @@ def generate_ad_image(category: str, origin_ad_image_path: str):
 
     client = genai.Client(api_key=os.getenv("GOOGLE_AI_API_KEY"))
     prompt = (
-        f"After picking this {category} object, "
-        "make it a good commercial image.",
+        f"""
+        You are a world-class advertising image generation expert. Analyze the user-provided image of a product in the {category} category and generate a high-quality commercial advertising image that makes the product stand out.
+
+        **Primary Goal:** Your top priority is to create a visually appealing image that maximizes the product's charm and stimulates a desire to purchase.
+
+        **Detailed Instructions:**
+        1.  **Analyze the {category} Product:** Accurately identify the {category} product in the provided image and understand its characteristics (e.g., color, material, shape).
+        2.  **Establish an Advertising Concept:** Select the most effective advertising concept that highlights the product's unique features (e.g., minimalism, lifestyle, technological innovation, eco-friendliness).
+        3.  **Background and Environment:** Create a suitable background, lighting, and shadows that harmonize with the product's concept and draw focus to it. The background should be kept simple to avoid clutter.
+        4.  **Style and Tone:** Apply a style (e.g., studio shot, outdoor shot, emotional tone) and a tone (bright and lively, calm and luxurious) that enhances commercial appeal.
+        5.  **Final Output:** Generate a commercial advertising image with high visual integrity, centered around the product.
+
+        **Input:**
+        * User-provided image
+        * {category} information
+        """,
     )
 
     image = Image.open(origin_ad_image_path)
